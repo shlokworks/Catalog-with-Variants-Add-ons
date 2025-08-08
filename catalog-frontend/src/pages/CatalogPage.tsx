@@ -42,7 +42,7 @@ const CatalogPage: React.FC = () => {
         const res = await axios.get<ProductType[]>('http://localhost:5001/api/products/types');
         setTypes(res.data);
       } catch {
-        // silently ignore; filter bar just won't show extra types
+        // ignore — filter bar just won't show extra types
       }
     })();
   }, []);
@@ -82,6 +82,10 @@ const CatalogPage: React.FC = () => {
     (t) => activeType === 'All' || t === activeType
   );
 
+  const nothingToShow =
+    visibleTypes.length === 0 ||
+    visibleTypes.every((t) => (grouped[t]?.length ?? 0) === 0);
+
   return (
     <div className="bg-gray-50 min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
@@ -115,6 +119,12 @@ const CatalogPage: React.FC = () => {
             </button>
           ))}
         </div>
+
+        {nothingToShow && (
+          <div className="text-center text-gray-500 py-10">
+            No products found for this type.
+          </div>
+        )}
 
         {/* Product sections */}
         {visibleTypes.map((type) => (
